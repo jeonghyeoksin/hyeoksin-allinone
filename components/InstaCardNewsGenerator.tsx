@@ -3,7 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { CardNewsState, GeneratedContent, CarouselSlide } from '../types';
 import { planInstaCardNews, generateCarouselImage } from '../services/geminiService';
 
-export const InstaCardNewsGenerator: React.FC = () => {
+interface InstaCardNewsGeneratorProps {
+  setProgress: (progress: number) => void;
+}
+
+export const InstaCardNewsGenerator: React.FC<InstaCardNewsGeneratorProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<CardNewsState>({
     topic: '',
     style: '미니멀 & 모던 (Minimal & Modern)'
@@ -47,11 +51,13 @@ export const InstaCardNewsGenerator: React.FC = () => {
     setSlides([]);
     setCaption("");
     setStatusMessage(`1단계: 딥리서치를 통해 ${slideCount}장 기획안 및 캡션 작성 중...`);
+    setProgress(10);
     
     try {
       // 1. Planning with Deep Research
       const { slides: plannedSlides, caption: generatedCaption, usage } = await planInstaCardNews(inputs.topic, inputs.style, slideCount);
       
+      setProgress(30);
       setSlides(plannedSlides);
       setCaption(generatedCaption);
       setStatusMessage("2단계: 기획 완료. 각 슬라이드별 이미지를 자동 생성합니다...");
@@ -62,6 +68,7 @@ export const InstaCardNewsGenerator: React.FC = () => {
     } catch (e: any) {
       setResult({ loading: false, error: e.message });
       setStatusMessage("오류가 발생했습니다. 다시 시도해주세요.");
+      setProgress(0);
     }
   };
 
@@ -71,6 +78,8 @@ export const InstaCardNewsGenerator: React.FC = () => {
           
           // Update status
           setStatusMessage(`이미지 생성 중... (${i + 1}/${targetSlides.length}) - ${slide.title}`);
+          const currentProgress = 30 + Math.floor(((i + 1) / targetSlides.length) * 70);
+          setProgress(currentProgress);
           
           // Update specific slide loading state
           setSlides(prev => prev.map(s => s.slideNumber === slide.slideNumber ? { ...s, isLoading: true } : s));
@@ -95,6 +104,8 @@ export const InstaCardNewsGenerator: React.FC = () => {
       }
       setResult({ loading: false });
       setStatusMessage("모든 작업이 완료되었습니다!");
+      setProgress(100);
+      setTimeout(() => setProgress(0), 1000);
   };
 
   const copyCaption = () => {

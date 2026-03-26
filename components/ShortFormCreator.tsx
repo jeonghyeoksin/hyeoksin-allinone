@@ -3,7 +3,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ShortFormState, GeneratedContent } from '../types';
 import { generateShortFormPlan, generateVeoVideo, generateVoiceover } from '../services/geminiService';
 
-export const ShortFormCreator: React.FC = () => {
+interface ShortFormCreatorProps {
+  setProgress: (progress: number) => void;
+}
+
+export const ShortFormCreator: React.FC<ShortFormCreatorProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<ShortFormState>({
     topic: ''
   });
@@ -22,24 +26,27 @@ export const ShortFormCreator: React.FC = () => {
     
     setResult({ loading: true, text: undefined, videoUrl: undefined, audioUrl: undefined });
     setStatusMessage("1단계: VEO 3.1 프롬프트 및 대본 기획 중...");
+    setProgress(10);
     setVeoPrompt("");
     setNarrationScript("");
     setHasPlan(false);
     setIsWaitingForKey(false);
-
+    
     try {
       // 1. Generate Plan & Prompt & Narration Script
       const { visualPrompt, scriptHtml, narration } = await generateShortFormPlan(inputs.topic);
       
+      setProgress(40);
       setResult(prev => ({ ...prev, text: scriptHtml, loading: false }));
       setVeoPrompt(visualPrompt);
       setNarrationScript(narration);
       setHasPlan(true);
       setStatusMessage("");
-
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
   };
 
@@ -61,11 +68,13 @@ export const ShortFormCreator: React.FC = () => {
       setResult(prev => ({ ...prev, loading: true, error: undefined }));
       setIsWaitingForKey(false);
       setStatusMessage("2단계: Google VEO 3.1이 영상을 생성하고 있습니다... (약 1~2분 소요)");
+      setProgress(50);
       
       try {
         // Run Video Generation
         const { videoUri } = await generateVeoVideo(prompt);
         
+        setProgress(80);
         setStatusMessage("영상 처리 중...");
         const apiKey = process.env.API_KEY;
         const fetchUrl = videoUri.includes('?') ? `${videoUri}&key=${apiKey}` : `${videoUri}?key=${apiKey}`;
@@ -79,6 +88,7 @@ export const ShortFormCreator: React.FC = () => {
         let audioUrl = undefined;
         if (narration && narration.trim().length > 0) {
             setStatusMessage("3단계: 한국어 나레이션(TTS) 생성 중...");
+            setProgress(90);
             try {
                 audioUrl = await generateVoiceover(narration);
             } catch (audioError) {
@@ -87,12 +97,15 @@ export const ShortFormCreator: React.FC = () => {
             }
         }
         
+        setProgress(100);
         setResult(prev => ({ ...prev, loading: false, videoUrl: videoUrl, audioUrl: audioUrl }));
         setStatusMessage("영상 및 오디오 생성 완료!");
+        setTimeout(() => setProgress(0), 1000);
         
       } catch (e: any) {
          setResult(prev => ({ ...prev, loading: false, error: e.message }));
          setStatusMessage("오류 발생: 다시 시도해주세요.");
+         setProgress(0);
       }
   };
 

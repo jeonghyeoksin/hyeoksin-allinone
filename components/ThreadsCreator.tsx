@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { ThreadsState, GeneratedContent } from '../types';
 import { generateThreadsPost } from '../services/geminiService';
 
-export const ThreadsCreator: React.FC = () => {
+interface ThreadsCreatorProps {
+  setProgress: (progress: number) => void;
+}
+
+export const ThreadsCreator: React.FC<ThreadsCreatorProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<ThreadsState>({
     topic: '',
     target: '',
@@ -16,12 +20,16 @@ export const ThreadsCreator: React.FC = () => {
     if (!inputs.topic) return;
     
     setResult({ loading: true, text: undefined });
+    setProgress(10);
     
     try {
       const text = await generateThreadsPost(inputs.topic, inputs.target, inputs.tone, inputs.goal);
+      setProgress(100);
       setResult({ loading: false, text });
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
+      setProgress(0);
     }
   };
 

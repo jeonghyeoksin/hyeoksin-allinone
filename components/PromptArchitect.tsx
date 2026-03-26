@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { GeneratedContent } from '../types';
 import { generateCustomPrompt } from '../services/geminiService';
 
-export const PromptArchitect: React.FC = () => {
+export const PromptArchitect: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [request, setRequest] = useState<string>('');
   const [result, setResult] = useState<GeneratedContent>({ loading: false });
 
@@ -11,19 +11,17 @@ export const PromptArchitect: React.FC = () => {
     if (!request.trim()) return;
     
     setResult({ loading: true, text: undefined });
+    setProgress(20);
     
     try {
       const { text, usage } = await generateCustomPrompt(request);
+      setProgress(100);
       setResult({ loading: false, text, usage });
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult({ loading: false, error: e.message });
+      setProgress(0);
     }
-  };
-
-  const copyToClipboard = async () => {
-      if (!result.text) return;
-      await navigator.clipboard.writeText(result.text);
-      alert("전체 내용이 복사되었습니다.");
   };
 
   return (
@@ -78,18 +76,12 @@ export const PromptArchitect: React.FC = () => {
                     <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                     설계된 프롬프트 보고서
                 </h3>
-                {result.text && (
-                  <button onClick={copyToClipboard} className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-white flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                    전체 복사
-                  </button>
-                )}
              </div>
 
              {result.error && <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-200 rounded-lg mb-4">{result.error}</div>}
              
              {result.text ? (
-                <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/30 p-6 rounded-xl border border-white/5">
+                <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/30 p-6 rounded-xl border border-white/5 no-copy">
                     <div className="prose prose-invert prose-blue max-w-none">
                         <pre className="whitespace-pre-wrap font-sans text-slate-200 leading-relaxed">
                             {result.text}

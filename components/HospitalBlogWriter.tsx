@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { HospitalBlogState, GeneratedContent } from '../types';
 import { generateHospitalBlogPost, generateHospitalImagesBatch } from '../services/geminiService';
 
-export const HospitalBlogWriter: React.FC = () => {
+export const HospitalBlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<HospitalBlogState>({
     hospitalName: '',
     subject: '',
@@ -26,6 +26,7 @@ export const HospitalBlogWriter: React.FC = () => {
     
     setResult({ loading: true, text: undefined, images: undefined });
     setStatusMessage("의료광고법을 준수한 원고를 작성하고 있습니다...");
+    setProgress(10);
     
     try {
       // 1. Generate Safe Text (with optional images and file)
@@ -42,6 +43,7 @@ export const HospitalBlogWriter: React.FC = () => {
         inputs.referenceFile
       );
       
+      setProgress(50);
       // Update state with text while images load
       setResult(prev => ({ ...prev, text, usage: textUsage, loading: true }));
       setStatusMessage("Gemini 3.0 Pro를 사용하여 고품질 썸네일과 이미지를 생성 중입니다... (약 30초 소요)");
@@ -62,12 +64,15 @@ export const HospitalBlogWriter: React.FC = () => {
           totalCostKRW: textUsage.totalCostKRW + imageUsage.totalCostKRW
       } : textUsage || imageUsage;
 
+      setProgress(100);
       setResult({ loading: false, text, images, usage: totalUsage });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
       
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
   };
 
@@ -383,15 +388,6 @@ export const HospitalBlogWriter: React.FC = () => {
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[400px] max-h-[600px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">블로그 원고 (의료법 준수)</h3>
-                {result.text && (
-                  <button 
-                    onClick={() => navigator.clipboard.writeText(result.text || '')}
-                    className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-white transition-colors flex items-center gap-1"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                    원고 복사
-                  </button>
-                )}
             </div>
 
             {result.error && (
@@ -410,7 +406,7 @@ export const HospitalBlogWriter: React.FC = () => {
             )}
 
             {result.text && (
-              <div className="prose prose-invert prose-lg max-w-none overflow-y-auto custom-scrollbar flex-1 pr-2">
+              <div className="prose prose-invert prose-lg max-w-none overflow-y-auto custom-scrollbar flex-1 pr-2 no-copy">
                 <div className="whitespace-pre-wrap leading-relaxed">
                   {result.text}
                 </div>

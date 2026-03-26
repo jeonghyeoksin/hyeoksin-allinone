@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ProfessionalBlogState, GeneratedContent } from '../types';
 import { generateProfessionalBlogPost, generateBlogImagesBatch } from '../services/geminiService';
 
-export const ProfessionalBlogWriter: React.FC = () => {
+export const ProfessionalBlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<ProfessionalBlogState>({
     job: '',
     target: '',
@@ -19,6 +19,7 @@ export const ProfessionalBlogWriter: React.FC = () => {
     
     setResult({ loading: true, text: undefined, images: undefined });
     setStatusMessage("P.A.S.C 프레임워크를 적용하여 고전환 원고를 설계하고 있습니다...");
+    setProgress(10);
     
     try {
       // 1. Generate Text (Gemini 3 Pro)
@@ -30,12 +31,14 @@ export const ProfessionalBlogWriter: React.FC = () => {
         inputs.tone
       );
       
+      setProgress(50);
       setResult(prev => ({ ...prev, text, usage: textUsage, loading: true }));
       setStatusMessage("전문적인 느낌의 블로그 이미지를 생성하고 있습니다...");
 
       // 2. Generate Images
       const { images, usage: imageUsage } = await generateBlogImagesBatch(inputs.topic, inputs.job);
       
+      setProgress(100);
       const totalUsage = {
           inputTokens: (textUsage?.inputTokens || 0) + (imageUsage?.inputTokens || 0),
           outputTokens: (textUsage?.outputTokens || 0) + (imageUsage?.outputTokens || 0),
@@ -46,27 +49,13 @@ export const ProfessionalBlogWriter: React.FC = () => {
 
       setResult({ loading: false, text, images, usage: totalUsage });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
       
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
-  };
-
-  const copyToClipboard = async () => {
-      if (!result.text) return;
-      try {
-        const type = "text/html";
-        const blob = new Blob([result.text], { type });
-        const textType = "text/plain";
-        const textBlob = new Blob([result.text.replace(/<[^>]*>?/gm, '')], { type: textType });
-        const data = [new ClipboardItem({ [type]: blob, [textType]: textBlob })];
-        await navigator.clipboard.write(data);
-        alert("원고가 복사되었습니다! (서식 포함)");
-      } catch (err) {
-        await navigator.clipboard.writeText(result.text.replace(/<[^>]*>?/gm, ''));
-        alert("텍스트가 복사되었습니다.");
-      }
   };
 
   const downloadAllImages = () => {
@@ -182,15 +171,6 @@ export const ProfessionalBlogWriter: React.FC = () => {
                 <h3 className="text-lg font-semibold text-white">
                     P.A.S.C 기반 전문직 칼럼
                 </h3>
-                {result.text && (
-                  <button 
-                    onClick={copyToClipboard}
-                    className="text-xs bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded text-white transition-colors flex items-center gap-1 shadow"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                    원고 복사
-                  </button>
-                )}
              </div>
 
              {result.error && (
@@ -207,7 +187,7 @@ export const ProfessionalBlogWriter: React.FC = () => {
              )}
              
              {result.text && (
-                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mb-6">
+                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mb-6 no-copy">
                     <div className="bg-white text-slate-900 p-8 rounded-xl leading-relaxed shadow-inner">
                         <div dangerouslySetInnerHTML={{ __html: result.text }} />
                     </div>
@@ -232,8 +212,8 @@ export const ProfessionalBlogWriter: React.FC = () => {
                  </div>
              )}
 
-          </div>
-        </div>
+            </div>
+         </div>
       </div>
     </div>
   );

@@ -3,7 +3,11 @@ import React, { useState, useRef } from 'react';
 import { AcademyBlogState, GeneratedContent } from '../types';
 import { generateAcademyBlogPost, generateAcademyImagesBatch } from '../services/geminiService';
 
-export const AcademyBlogWriter: React.FC = () => {
+interface AcademyBlogWriterProps {
+  setProgress: (progress: number) => void;
+}
+
+export const AcademyBlogWriter: React.FC<AcademyBlogWriterProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<AcademyBlogState>({
     academyName: '',
     subject: '',
@@ -26,6 +30,7 @@ export const AcademyBlogWriter: React.FC = () => {
     
     setResult({ loading: true, text: undefined, images: undefined });
     setStatusMessage("학원 광고 표시법을 준수하고 시각적으로 구조화된 원고를 작성하고 있습니다...");
+    setProgress(10);
     
     try {
       // 1. Generate Safe Text
@@ -42,6 +47,7 @@ export const AcademyBlogWriter: React.FC = () => {
         inputs.referenceFile
       );
       
+      setProgress(40);
       // Update state with text while images load
       setResult(prev => ({ ...prev, text, usage: textUsage, loading: true }));
       setStatusMessage("Gemini 3.0 Pro를 사용하여 학습 고민 및 솔루션 이미지를 생성 중입니다... (약 30초 소요)");
@@ -54,6 +60,7 @@ export const AcademyBlogWriter: React.FC = () => {
           inputs.referenceTeacherImage
       );
       
+      setProgress(90);
       const totalUsage = textUsage && imageUsage ? {
           inputTokens: textUsage.inputTokens + imageUsage.inputTokens,
           outputTokens: textUsage.outputTokens + imageUsage.outputTokens,
@@ -64,10 +71,13 @@ export const AcademyBlogWriter: React.FC = () => {
 
       setResult({ loading: false, text, images, usage: totalUsage });
       setStatusMessage("");
+      setProgress(100);
+      setTimeout(() => setProgress(0), 1000);
       
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
   };
 
@@ -408,15 +418,6 @@ export const AcademyBlogWriter: React.FC = () => {
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[400px] max-h-[600px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">블로그 원고 (SEO 최적화 + 서식 적용)</h3>
-                {result.text && (
-                  <button 
-                    onClick={copyToClipboard}
-                    className="text-xs bg-orange-600 hover:bg-orange-500 px-3 py-1.5 rounded text-white transition-colors flex items-center gap-1 shadow"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                    서식 포함 복사 (블로그 붙여넣기용)
-                  </button>
-                )}
             </div>
 
             {result.error && (
@@ -435,7 +436,7 @@ export const AcademyBlogWriter: React.FC = () => {
             )}
 
             {result.text && (
-              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 bg-white rounded-lg text-slate-900 p-6">
+              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 bg-white rounded-lg text-slate-900 p-6 no-copy">
                  {/* Render HTML content safely */}
                  <div 
                     className="blog-content-preview"

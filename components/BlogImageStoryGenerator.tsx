@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { GeneratedContent } from '../types';
 import { generateStorytellingImages } from '../services/geminiService';
 
-export const BlogImageStoryGenerator: React.FC = () => {
+interface BlogImageStoryGeneratorProps {
+  setProgress: (progress: number) => void;
+}
+
+export const BlogImageStoryGenerator: React.FC<BlogImageStoryGeneratorProps> = ({ setProgress }) => {
   const [content, setContent] = useState<string>('');
   const [result, setResult] = useState<GeneratedContent>({ loading: false });
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -13,15 +17,19 @@ export const BlogImageStoryGenerator: React.FC = () => {
     
     setResult({ loading: true, images: undefined });
     setStatusMessage("내용을 분석하여 4단계 스토리텔링 이미지를 기획하고 있습니다...");
+    setProgress(20);
     
     try {
       // Generate 4 sequential images
       const images = await generateStorytellingImages(content);
+      setProgress(100);
       setResult({ loading: false, images });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult({ loading: false, error: e.message });
       setStatusMessage("");
+      setProgress(0);
     }
   };
 

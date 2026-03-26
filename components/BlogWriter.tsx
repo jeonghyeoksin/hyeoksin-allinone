@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { BlogWriterState, GeneratedContent, TokenUsage } from '../types';
 import { generateBlogPost, generateBlogImagesBatch } from '../services/geminiService';
 
-export const BlogWriter: React.FC = () => {
+export const BlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<BlogWriterState>({
     topic: '',
     mainKeyword: '',
@@ -25,6 +25,7 @@ export const BlogWriter: React.FC = () => {
     
     setResult({ loading: true, text: undefined, images: undefined });
     setStatusMessage("최적화된 키워드로 깔끔한 블로그 원고를 작성하고 있습니다...");
+    setProgress(10);
     
     try {
       // 1. Generate Text (Pass all inputs including image/file)
@@ -39,12 +40,14 @@ export const BlogWriter: React.FC = () => {
         inputs.referenceFile
       );
       
+      setProgress(50);
       setResult(prev => ({ ...prev, text, usage: textUsage, loading: true }));
       setStatusMessage(`'${inputs.tone}' 분위기에 맞는 4단계 스토리텔링 이미지를 생성 중입니다...`);
 
       // 2. Generate Images (Batch) - Pass tone to match style
       const { images, usage: imageUsage } = await generateBlogImagesBatch(inputs.topic, inputs.mainKeyword, inputs.tone);
       
+      setProgress(90);
       const totalUsage = {
           inputTokens: (textUsage?.inputTokens || 0) + (imageUsage?.inputTokens || 0),
           outputTokens: (textUsage?.outputTokens || 0) + (imageUsage?.outputTokens || 0),
@@ -55,10 +58,13 @@ export const BlogWriter: React.FC = () => {
 
       setResult({ loading: false, text, images, usage: totalUsage });
       setStatusMessage("");
+      setProgress(100);
+      setTimeout(() => setProgress(0), 1000);
       
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
   };
 
@@ -254,14 +260,11 @@ export const BlogWriter: React.FC = () => {
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[400px] max-h-[700px] flex flex-col relative">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">블로그 원고</h3>
-                {result.text && (
-                  <button onClick={() => navigator.clipboard.writeText(result.text || '')} className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-white transition-colors">원고 복사</button>
-                )}
             </div>
 
             {/* Content Display */}
             {result.text ? (
-              <div className="prose prose-invert prose-lg max-w-none overflow-y-auto custom-scrollbar flex-1 pr-2">
+              <div className="prose prose-invert prose-lg max-w-none overflow-y-auto custom-scrollbar flex-1 pr-2 no-copy">
                 <div className="whitespace-pre-wrap leading-relaxed text-slate-200" dangerouslySetInnerHTML={{ __html: result.text }} />
               </div>
             ) : (

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ProfitItemState, GeneratedContent } from '../types';
 import { generateProfitItems } from '../services/geminiService';
 
-export const ProfitItemFinder: React.FC = () => {
+export const ProfitItemFinder: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<ProfitItemState>({
     category: ''
   });
@@ -15,27 +15,19 @@ export const ProfitItemFinder: React.FC = () => {
     
     setResult({ loading: true, text: undefined });
     setStatusMessage("Google Search를 통해 실시간 트렌드와 수익성 높은 아이템을 발굴 중입니다...");
+    setProgress(20);
     
     try {
       const { text, usage } = await generateProfitItems(inputs.category);
+      setProgress(100);
       setResult({ loading: false, text, usage });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult({ loading: false, error: e.message });
       setStatusMessage("");
+      setProgress(0);
     }
-  };
-
-  const copyToClipboard = async () => {
-      if (!result.text) return;
-      try {
-        // Strip HTML tags for plain text copy
-        const plainText = result.text.replace(/<[^>]*>?/gm, '');
-        await navigator.clipboard.writeText(plainText);
-        alert("분석 내용이 복사되었습니다.");
-      } catch (err) {
-        console.error("Copy failed", err);
-      }
   };
 
   return (
@@ -97,15 +89,6 @@ export const ProfitItemFinder: React.FC = () => {
                     <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     발굴된 수익화 아이템 리스트
                 </h3>
-                {result.text && (
-                    <button 
-                        onClick={copyToClipboard}
-                        className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-white flex items-center gap-1 transition-colors"
-                    >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                        전체 복사
-                    </button>
-                )}
             </div>
 
             {result.error && (
@@ -122,7 +105,7 @@ export const ProfitItemFinder: React.FC = () => {
             )}
             
             {result.text && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up no-copy">
                     <div className="col-span-full mb-4 bg-slate-800/40 p-4 rounded-xl border border-white/5">
                         <p className="text-sm text-slate-300">
                             💡 <b>Gemini 3.0 Analysis:</b> 구글 검색 트렌드와 시장 수요를 기반으로 선정된 TOP 5 아이템입니다.

@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { FoodBlogState, GeneratedContent } from '../types';
 import { generateFoodBlogPost, searchRestaurantInfo } from '../services/geminiService';
 
-export const FoodBlogWriter: React.FC = () => {
+export const FoodBlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<FoodBlogState>({
     restaurantName: '',
     location: '',
@@ -25,9 +25,11 @@ export const FoodBlogWriter: React.FC = () => {
 
       setIsAutoFilling(true);
       setStatusMessage("Google Search를 통해 식당 정보를 수집하고 있습니다...");
+      setProgress(20);
 
       try {
           const { data } = await searchRestaurantInfo(inputs.restaurantName);
+          setProgress(100);
           
           setInputs(prev => ({
               ...prev,
@@ -39,10 +41,12 @@ export const FoodBlogWriter: React.FC = () => {
               overallReview: data.overallReview || prev.overallReview
           }));
           setStatusMessage("");
+          setTimeout(() => setProgress(0), 1000);
       } catch (e: any) {
           console.error(e);
           alert("정보를 찾을 수 없습니다. 직접 입력해주세요.");
           setStatusMessage("");
+          setProgress(0);
       } finally {
           setIsAutoFilling(false);
       }
@@ -53,6 +57,7 @@ export const FoodBlogWriter: React.FC = () => {
     
     setResult({ loading: true, text: undefined, images: undefined });
     setStatusMessage("정보 수집 완료. 사진 촬영 가이드가 포함된 SEO 최적화 맛집 리뷰를 작성하고 있습니다...");
+    setProgress(10);
     
     try {
       // 1. Generate Text (Text only with photo guides)
@@ -66,29 +71,16 @@ export const FoodBlogWriter: React.FC = () => {
         inputs.overallReview
       );
       
+      setProgress(100);
       setResult({ loading: false, text });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
       
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
-  };
-
-  const copyToClipboard = async () => {
-      if (!result.text) return;
-      try {
-        const type = "text/html";
-        const blob = new Blob([result.text], { type });
-        const textType = "text/plain";
-        const textBlob = new Blob([result.text.replace(/<[^>]*>?/gm, '')], { type: textType });
-        const data = [new ClipboardItem({ [type]: blob, [textType]: textBlob })];
-        await navigator.clipboard.write(data);
-        alert("서식이 포함된 원고가 복사되었습니다!");
-      } catch (err) {
-        await navigator.clipboard.writeText(result.text.replace(/<[^>]*>?/gm, ''));
-        alert("텍스트가 복사되었습니다.");
-      }
   };
 
   return (
@@ -254,15 +246,6 @@ export const FoodBlogWriter: React.FC = () => {
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">맛집 블로그 원고</h3>
-                {result.text && (
-                  <button 
-                    onClick={copyToClipboard}
-                    className="text-xs bg-red-600 hover:bg-red-500 px-3 py-1.5 rounded text-white transition-colors flex items-center gap-1 shadow"
-                  >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                    서식 포함 복사
-                  </button>
-                )}
             </div>
 
             {result.error && (
@@ -281,7 +264,7 @@ export const FoodBlogWriter: React.FC = () => {
             )}
 
             {result.text && (
-              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 bg-white rounded-lg text-slate-900 p-6">
+              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 bg-white rounded-lg text-slate-900 p-6 no-copy">
                  {/* Render HTML content safely */}
                  <div 
                     className="blog-content-preview"

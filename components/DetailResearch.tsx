@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { DetailResearchState, GeneratedContent } from '../types';
 import { generateDetailResearch, generateCarouselSummary } from '../services/geminiService';
 
-export const DetailResearch: React.FC = () => {
+export const DetailResearch: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<DetailResearchState>({
     topic: '',
     category: '시장 동향 (Market Trends)',
@@ -36,14 +36,18 @@ export const DetailResearch: React.FC = () => {
     setCarouselResult({ loading: false, text: undefined }); // Reset carousel result
     setShowCarouselSection(false); // Hide carousel section initially
     setStatusMessage(`[${inputs.category}] 분야에 대해 Deep Research를 수행 중입니다... (파일 ${inputs.files.length}개 분석 포함)`);
+    setProgress(10);
     
     try {
       const { text, sources, usage } = await generateDetailResearch(inputs.topic, inputs.category, inputs.files);
+      setProgress(100);
       setResult({ loading: false, text, sources, usage });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult({ loading: false, error: e.message });
       setStatusMessage("");
+      setProgress(0);
     }
   };
 
@@ -51,12 +55,16 @@ export const DetailResearch: React.FC = () => {
       if (!result.text) return;
       
       setCarouselResult({ loading: true, text: undefined });
+      setProgress(20);
       
       try {
           const { text, usage } = await generateCarouselSummary(result.text, slideCount);
+          setProgress(100);
           setCarouselResult({ loading: false, text, usage });
+          setTimeout(() => setProgress(0), 1000);
       } catch (e: any) {
           setCarouselResult({ loading: false, error: e.message });
+          setProgress(0);
       }
   };
 
@@ -238,15 +246,6 @@ export const DetailResearch: React.FC = () => {
                         <svg className="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
                         리서치 결과 리포트
                     </h3>
-                    {result.text && (
-                    <button 
-                        onClick={() => copyToClipboard(result.text!)}
-                        className="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-white flex items-center gap-1 transition-colors"
-                    >
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                        전체 복사
-                    </button>
-                    )}
                 </div>
 
                 {result.error && (
@@ -258,7 +257,7 @@ export const DetailResearch: React.FC = () => {
                 <div className="flex-1 flex flex-col lg:flex-row gap-8 overflow-hidden">
                     {/* Main Content */}
                     {result.text && (
-                        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/30 p-6 rounded-xl border border-white/5">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/30 p-6 rounded-xl border border-white/5 no-copy">
                             <div className="prose prose-invert prose-indigo max-w-none leading-relaxed">
                                 <div 
                                     className="whitespace-pre-wrap font-sans text-slate-200"
@@ -358,16 +357,7 @@ export const DetailResearch: React.FC = () => {
 
                     {carouselResult.text && (
                         <div className="relative">
-                            <div className="absolute top-0 right-0 z-10">
-                                <button 
-                                    onClick={() => copyToClipboard(carouselResult.text!)}
-                                    className="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded text-white flex items-center gap-1 transition-colors border border-white/10"
-                                >
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
-                                    기획안 복사
-                                </button>
-                            </div>
-                            <div className="overflow-y-auto custom-scrollbar p-2">
+                            <div className="overflow-y-auto custom-scrollbar p-2 no-copy">
                                 <div dangerouslySetInnerHTML={{ __html: carouselResult.text }} />
                             </div>
                         </div>

@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import { NewsletterState, GeneratedContent } from '../types';
 import { generateNewsletter, generateNewsletterImage } from '../services/geminiService';
 
-export const NewsletterCreator: React.FC = () => {
+interface NewsletterCreatorProps {
+  setProgress: (progress: number) => void;
+}
+
+export const NewsletterCreator: React.FC<NewsletterCreatorProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<NewsletterState>({
     topic: ''
   });
@@ -42,16 +46,19 @@ export const NewsletterCreator: React.FC = () => {
 
     setResult({ loading: true, text: undefined, imageUrl: undefined });
     setStatusMessage("뉴스레터 에디터가 원고를 작성하고 있습니다...");
+    setProgress(10);
     
     try {
       // 1. Generate Text Content
       const { text, usage: textUsage } = await generateNewsletter(inputs.topic);
+      setProgress(50);
       setResult(prev => ({ ...prev, text, loading: true }));
       
       // 2. Generate Image
       setStatusMessage("비주얼 디렉터가 썸네일 이미지를 디자인하고 있습니다...");
       const { imageUrl, usage: imageUsage } = await generateNewsletterImage(inputs.topic);
       
+      setProgress(90);
       const totalUsage = {
           inputTokens: (textUsage?.inputTokens || 0) + (imageUsage?.inputTokens || 0),
           outputTokens: (textUsage?.outputTokens || 0) + (imageUsage?.outputTokens || 0),
@@ -60,12 +67,15 @@ export const NewsletterCreator: React.FC = () => {
           totalCostKRW: (textUsage?.totalCostKRW || 0) + (imageUsage?.totalCostKRW || 0)
       };
 
+      setProgress(100);
       setResult({ loading: false, text, imageUrl, usage: totalUsage });
       setStatusMessage("");
+      setTimeout(() => setProgress(0), 1000);
       
     } catch (e: any) {
       setResult(prev => ({ ...prev, loading: false, error: e.message }));
       setStatusMessage("");
+      setProgress(0);
     }
   };
 

@@ -7,7 +7,7 @@ import {
   generateInstagramContent
 } from '../services/geminiService';
 
-export const AllInOneCreator: React.FC = () => {
+export const AllInOneCreator: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<AllInOneState>({
     title: '',
     keyword: '',
@@ -30,11 +30,14 @@ export const AllInOneCreator: React.FC = () => {
 
     // 1. Blog
     setBlogResult({ loading: true });
+    setProgress(10);
     generateBlogPost(inputs.title, inputs.keyword, target, message, mood, '')
     .then(({ text, usage: textUsage }) => {
+        setProgress(40);
         setBlogResult(prev => ({ ...prev, text, usage: textUsage }));
         return generateBlogImagesBatch(inputs.title, inputs.keyword)
             .then(({ images, usage: imgUsage }) => {
+                setProgress(70);
                 // Merge usages
                 const totalUsage = {
                     inputTokens: (textUsage?.inputTokens || 0) + (imgUsage?.inputTokens || 0),
@@ -45,14 +48,22 @@ export const AllInOneCreator: React.FC = () => {
                 };
                 setBlogResult(prev => ({ ...prev, images, usage: totalUsage, loading: false }));
             });
-    }).catch(e => setBlogResult(prev => ({ ...prev, loading: false, error: e.message })));
+    }).catch(e => {
+        setBlogResult(prev => ({ ...prev, loading: false, error: e.message }));
+        setProgress(0);
+    });
 
     // 2. Insta
     setInstaResult({ loading: true });
     generateInstagramContent(inputs.title, mood, undefined)
     .then(({ imageUrl, caption, usage }) => {
+        setProgress(100);
         setInstaResult({ loading: false, imageUrl, text: caption, usage });
-    }).catch(e => setInstaResult({ loading: false, error: e.message }));
+        setTimeout(() => setProgress(0), 1000);
+    }).catch(e => {
+        setInstaResult({ loading: false, error: e.message });
+        setProgress(0);
+    });
   };
 
   return (
@@ -103,7 +114,7 @@ export const AllInOneCreator: React.FC = () => {
           <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
               {activeTab === 'BLOG' && (
                   blogResult.text ? (
-                    <div className="prose prose-invert max-w-none">
+                    <div className="prose prose-invert max-w-none no-copy">
                         <div dangerouslySetInnerHTML={{ __html: blogResult.text }} />
                         <div className="grid grid-cols-3 gap-4 mt-4">
                             {blogResult.images?.map((img, i) => <img key={i} src={img.url} className="rounded-lg" alt="Blog" />)}
@@ -121,7 +132,7 @@ export const AllInOneCreator: React.FC = () => {
                         <div className="w-[350px]">
                             <img src={instaResult.imageUrl} className="w-full rounded-xl shadow-lg border border-white/10" alt="Insta" />
                         </div>
-                        <div className="flex-1 bg-slate-800 p-6 rounded-xl border border-white/5">
+                        <div className="flex-1 bg-slate-800 p-6 rounded-xl border border-white/5 no-copy">
                             <h4 className="text-pink-400 font-bold mb-2">추천 캡션 & 해시태그</h4>
                             <div className="whitespace-pre-wrap text-sm text-slate-300 leading-relaxed">{instaResult.text}</div>
                         </div>

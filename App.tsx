@@ -24,7 +24,96 @@ import { YouTubePlanner } from './components/YouTubePlanner';
 import { PromptArchitect } from './components/PromptArchitect';
 import { DetailResearch } from './components/DetailResearch';
 import { ProfitItemFinder } from './components/ProfitItemFinder';
-import { Key, Check, X, AlertCircle } from 'lucide-react';
+import { Key, Check, X, AlertCircle, HelpCircle, ExternalLink, MessageSquare } from 'lucide-react';
+
+const USAGE_INSTRUCTIONS: Record<AppMode, string[]> = {
+  [AppMode.DASHBOARD]: [
+    "원하는 마케팅 도구를 선택하여 콘텐츠 생성을 시작하세요.",
+    "우측 상단의 API Key 버튼을 통해 개인 구글 API 키를 설정할 수 있습니다.",
+    "모든 결과물은 AI가 생성하며, 상업적 이용 시 검토가 필요합니다."
+  ],
+  [AppMode.BLOG_WRITER]: [
+    "주제와 키워드를 입력하면 SEO에 최적화된 블로그 원고와 이미지가 생성됩니다.",
+    "참고 이미지나 파일을 첨부하여 더 정확한 결과물을 얻을 수 있습니다.",
+    "결과물 텍스트는 복사가 제한되어 있습니다."
+  ],
+  [AppMode.INSTAGRAM]: [
+    "인스타그램 캐러셀 기획안과 이미지를 생성합니다.",
+    "분위기와 컨셉을 입력하여 브랜드에 맞는 콘텐츠를 제작하세요."
+  ],
+  [AppMode.HOSPITAL_BLOG]: [
+    "의료광고법을 준수하는 병원 마케팅 원고를 작성합니다.",
+    "신뢰감 있는 이미지와 함께 전문적인 칼럼을 생성합니다."
+  ],
+  [AppMode.ACADEMY_BLOG]: [
+    "학원 홍보를 위한 교육 마케팅 콘텐츠를 제작합니다.",
+    "학부모와 학생의 마음을 사로잡는 스토리텔링을 제공합니다."
+  ],
+  [AppMode.PROFESSIONAL_BLOG]: [
+    "변호사, 세무사 등 전문직을 위한 고품격 지식 공유 콘텐츠를 생성합니다.",
+    "PASC 프레임워크를 활용하여 설득력 있는 글을 작성합니다."
+  ],
+  [AppMode.FOOD_BLOG_WRITER]: [
+    "맛집 리뷰를 위한 생생한 묘사와 이미지를 생성합니다.",
+    "네이버 상위 노출을 고려한 키워드 배치를 지원합니다."
+  ],
+  [AppMode.BLOG_IMAGE_STORY]: [
+    "블로그 본문에 들어갈 4컷 스토리텔링 이미지를 생성합니다.",
+    "글의 흐름에 맞는 시각적 요소를 자동으로 설계합니다."
+  ],
+  [AppMode.BLOG_THUMBNAIL]: [
+    "블로그의 첫인상을 결정하는 썸네일을 자동 디자인합니다.",
+    "제목 텍스트와 어울리는 배경 이미지를 생성합니다."
+  ],
+  [AppMode.INSTA_CARD_NEWS]: [
+    "주제 하나로 10장의 카드뉴스를 기획하고 제작합니다.",
+    "각 슬라이드별 비주얼 프롬프트와 텍스트를 제공합니다."
+  ],
+  [AppMode.SHORT_FORM_CREATOR]: [
+    "숏폼 영상의 기획안, 대본, 나레이션을 생성합니다.",
+    "Veo 모델을 활용하여 실제 영상 소스까지 제작 가능합니다."
+  ],
+  [AppMode.KEYWORD_ANALYSIS]: [
+    "SEO 전략 수립을 위한 키워드 경쟁도와 잠재력을 분석합니다.",
+    "황금 키워드 발굴을 통해 노출 확률을 높입니다."
+  ],
+  [AppMode.ALL_IN_ONE_CREATOR]: [
+    "하나의 주제로 블로그, 인스타, 숏폼 콘텐츠를 동시에 생성합니다.",
+    "채널별 특성에 맞는 최적화된 결과물을 제공합니다."
+  ],
+  [AppMode.NEWSLETTER]: [
+    "구독자에게 발송할 뉴스레터 본문과 썸네일을 제작합니다.",
+    "클릭을 유도하는 후킹 제목과 유익한 내용을 구성합니다."
+  ],
+  [AppMode.THREADS]: [
+    "스레드 알고리즘에 최적화된 가독성 좋은 포스팅을 작성합니다.",
+    "높은 도달률을 위한 훅과 구조를 제안합니다."
+  ],
+  [AppMode.DETAIL_PAGE_CREATOR]: [
+    "상품 상세페이지의 기획과 섹션별 이미지를 생성합니다.",
+    "구매 전환율을 높이는 논리적인 구조로 설계합니다."
+  ],
+  [AppMode.PERFORMANCE_MARKETING]: [
+    "광고 성과를 높이기 위한 A/B 테스트 소재를 분석합니다.",
+    "데이터 기반으로 더 효율적인 광고안을 추천합니다."
+  ],
+  [AppMode.YOUTUBE_PLANNER]: [
+    "유튜브 채널 성장을 위한 롱폼/숏폼 기획안을 작성합니다.",
+    "시청 지속시간을 높이는 대본 구조를 제안합니다."
+  ],
+  [AppMode.PROMPT_ARCHITECT]: [
+    "AI 모델의 성능을 극대화하는 전문적인 프롬프트를 설계합니다.",
+    "복잡한 요청도 AI가 이해하기 쉬운 구조로 변환합니다."
+  ],
+  [AppMode.DETAIL_RESEARCH]: [
+    "특정 주제에 대한 심층적인 리서치 보고서를 생성합니다.",
+    "실시간 웹 검색을 통해 최신 정보를 반영합니다."
+  ],
+  [AppMode.PROFIT_ITEM_FINDER]: [
+    "현재 시장에서 수익성이 높은 아이템과 트렌드를 발굴합니다.",
+    "데이터 기반의 비즈니스 기회를 제안합니다."
+  ]
+};
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppMode>(AppMode.DASHBOARD);
@@ -32,6 +121,8 @@ const App: React.FC = () => {
   const [isKeyValid, setIsKeyValid] = useState<boolean | null>(null);
   const [isValidating, setIsValidating] = useState(false);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isUsageModalOpen, setIsUsageModalOpen] = useState(false);
+  const [progress, setProgress] = useState<number>(0);
 
   const handleSaveApiKey = async () => {
     if (!apiKey) {
@@ -53,46 +144,45 @@ const App: React.FC = () => {
       case AppMode.DASHBOARD:
         return <Dashboard onNavigate={setMode} />;
       case AppMode.PROFIT_ITEM_FINDER:
-        return <ProfitItemFinder />;
+        return <ProfitItemFinder setProgress={setProgress} />;
       case AppMode.PROMPT_ARCHITECT:
-        return <PromptArchitect />;
+        return <PromptArchitect setProgress={setProgress} />;
       case AppMode.DETAIL_RESEARCH:
-        return <DetailResearch />;
+        return <DetailResearch setProgress={setProgress} />;
       case AppMode.ALL_IN_ONE_CREATOR:
-        return <AllInOneCreator />;
+        return <AllInOneCreator setProgress={setProgress} />;
       case AppMode.DETAIL_PAGE_CREATOR:
-        return <DetailPageCreator />;
+        return <DetailPageCreator setProgress={setProgress} />;
       case AppMode.PERFORMANCE_MARKETING:
-        return <PerformanceMarketingAnalyzer />;
+        return <PerformanceMarketingAnalyzer setProgress={setProgress} />;
       case AppMode.YOUTUBE_PLANNER:
-        return <YouTubePlanner />;
+        return <YouTubePlanner setProgress={setProgress} />;
       case AppMode.BLOG_WRITER:
-        return <BlogWriter />;
+        return <BlogWriter setProgress={setProgress} />;
       case AppMode.INSTAGRAM:
-        return <InstagramCreator />;
+        return <InstagramCreator setProgress={setProgress} />;
       case AppMode.HOSPITAL_BLOG:
-        return <HospitalBlogWriter />;
+        return <HospitalBlogWriter setProgress={setProgress} />;
       case AppMode.ACADEMY_BLOG:
-        return <AcademyBlogWriter />;
+        return <AcademyBlogWriter setProgress={setProgress} />;
       case AppMode.PROFESSIONAL_BLOG:
-        return <ProfessionalBlogWriter />;
+        return <ProfessionalBlogWriter setProgress={setProgress} />;
       case AppMode.BLOG_IMAGE_STORY:
-        return <BlogImageStoryGenerator />;
+        return <BlogImageStoryGenerator setProgress={setProgress} />;
       case AppMode.BLOG_THUMBNAIL:
-        return <BlogThumbnailGenerator />;
+        return <BlogThumbnailGenerator setProgress={setProgress} />;
       case AppMode.INSTA_CARD_NEWS:
-        // Sidebar item removed, but kept here for potential internal linking or dashboard access
-        return <InstaCardNewsGenerator />;
+        return <InstaCardNewsGenerator setProgress={setProgress} />;
       case AppMode.FOOD_BLOG_WRITER:
-        return <FoodBlogWriter />;
+        return <FoodBlogWriter setProgress={setProgress} />;
       case AppMode.SHORT_FORM_CREATOR:
-        return <ShortFormCreator />;
+        return <ShortFormCreator setProgress={setProgress} />;
       case AppMode.KEYWORD_ANALYSIS:
-        return <KeywordAnalyzer />;
+        return <KeywordAnalyzer setProgress={setProgress} />;
       case AppMode.NEWSLETTER:
-        return <NewsletterCreator />;
+        return <NewsletterCreator setProgress={setProgress} />;
       case AppMode.THREADS:
-        return <ThreadsCreator />;
+        return <ThreadsCreator setProgress={setProgress} />;
       default:
         return <Dashboard onNavigate={setMode} />;
     }
@@ -334,78 +424,165 @@ const App: React.FC = () => {
       </aside>
 
       <Layout title={title} subtitle={subtitle}>
+        {/* Global Progress Bar */}
+        {progress > 0 && progress < 100 && (
+          <div className="fixed top-0 left-0 right-0 z-[100] h-1 bg-slate-900">
+            <div 
+              className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)] transition-all duration-300"
+              style={{ width: `${progress}%` }}
+            />
+            <div className="absolute top-2 right-4 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg">
+              {progress}% 완료
+            </div>
+          </div>
+        )}
+
         {renderContent()}
       </Layout>
 
-      {/* Floating API Key Button & Modal */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        {isApiKeyModalOpen && (
-          <div className="mb-4 bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-2xl w-80 animate-in slide-in-from-bottom-4 fade-in duration-200">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Key className="w-4 h-4 text-blue-400" />
+      {/* Top Right Controls */}
+      <div className="fixed top-6 right-8 z-50 flex items-center gap-3">
+        {/* Usage Instructions Button */}
+        <button
+          onClick={() => setIsUsageModalOpen(true)}
+          className="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md border border-white/10 px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all shadow-xl"
+        >
+          <HelpCircle className="w-4 h-4" />
+          사용방법
+        </button>
+
+        {/* API Key Button */}
+        <button
+          onClick={() => setIsApiKeyModalOpen(!isApiKeyModalOpen)}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-xl transition-all backdrop-blur-md border border-white/10 ${
+            isKeyValid === true ? 'bg-green-600/20 text-green-400 border-green-500/30' : 
+            isKeyValid === false ? 'bg-red-600/20 text-red-400 border-red-500/30' : 
+            'bg-slate-900/80 text-slate-300 hover:bg-slate-800'
+          }`}
+        >
+          {isKeyValid === true ? (
+            <Check className="w-4 h-4" />
+          ) : isKeyValid === false ? (
+            <AlertCircle className="w-4 h-4" />
+          ) : (
+            <Key className="w-4 h-4" />
+          )}
+          {isKeyValid === true ? 'API 활성' : isKeyValid === false ? 'API 오류' : 'API 설정'}
+        </button>
+      </div>
+
+      {/* Bottom Right Controls */}
+      <div className="fixed bottom-6 right-8 z-50 flex flex-col items-end gap-3">
+        <a
+          href="https://hyeoksinai.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-900/20 transition-all transform hover:-translate-y-1"
+        >
+          <ExternalLink className="w-4 h-4" />
+          혁신AI 플랫폼 바로가기
+        </a>
+        <button
+          onClick={() => alert('오류 및 유지보수 문의: info@nextin.ai.kr')}
+          className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium border border-white/5 shadow-lg transition-all transform hover:-translate-y-1"
+        >
+          <MessageSquare className="w-4 h-4" />
+          오류/유지보수 문의
+        </button>
+      </div>
+
+      {/* Usage Instructions Modal */}
+      {isUsageModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-white/10 rounded-3xl p-8 shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <HelpCircle className="w-6 h-6 text-blue-400" />
+                사용방법 가이드
+              </h3>
+              <button onClick={() => setIsUsageModalOpen(false)} className="text-slate-400 hover:text-white">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl">
+                <p className="text-sm font-bold text-blue-400 mb-1">현재 도구: {getPageInfo().title}</p>
+                <p className="text-xs text-slate-400">{getPageInfo().subtitle}</p>
+              </div>
+              <ul className="space-y-3">
+                {(USAGE_INSTRUCTIONS[mode] || []).map((step, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-300 text-sm">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-[10px] font-bold text-blue-400">
+                      {i + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button
+              onClick={() => setIsUsageModalOpen(false)}
+              className="w-full mt-8 bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-xl font-bold transition-colors"
+            >
+              확인했습니다
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* API Key Modal */}
+      {isApiKeyModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-white/10 rounded-3xl p-8 shadow-2xl max-w-sm w-full animate-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Key className="w-6 h-6 text-blue-400" />
                 API Key 설정
               </h3>
-              <button 
-                onClick={() => setIsApiKeyModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
-              >
-                <X className="w-4 h-4" />
+              <button onClick={() => setIsApiKeyModalOpen(false)} className="text-slate-400 hover:text-white">
+                <X className="w-6 h-6" />
               </button>
             </div>
             
-            <div className="space-y-3">
+            <div className="space-y-4">
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Google Gemini API Key를 입력하세요. 입력하신 키는 브라우저에 안전하게 저장되며 콘텐츠 생성에 사용됩니다.
+              </p>
               <input
                 type="password"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Google Gemini API Key"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
               />
               {isKeyValid === false && (
-                <div className="text-[10px] text-red-400 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" />
-                  유효하지 않은 API 키입니다.
+                <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-xs text-red-400 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  유효하지 않은 API 키입니다. 다시 확인해주세요.
+                </div>
+              )}
+              {isKeyValid === true && (
+                <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-xl text-xs text-green-400 flex items-center gap-2">
+                  <Check className="w-4 h-4" />
+                  API 키가 성공적으로 인증되었습니다.
                 </div>
               )}
               <button
                 onClick={handleSaveApiKey}
                 disabled={isValidating}
-                className={`w-full py-2.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+                className={`w-full py-3 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2 ${
                   isValidating ? 'bg-blue-600/50 text-white' : 'bg-blue-600 hover:bg-blue-500 text-white'
                 }`}
               >
                 {isValidating ? (
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                ) : '적용하기'}
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                ) : 'API 키 적용하기'}
               </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        <button
-          onClick={() => setIsApiKeyModalOpen(!isApiKeyModalOpen)}
-          className={`group flex items-center justify-center w-12 h-12 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 ${
-            isKeyValid === true ? 'bg-green-600 hover:bg-green-500' : 
-            isKeyValid === false ? 'bg-red-600 hover:bg-red-500' : 
-            'bg-slate-700 hover:bg-slate-600'
-          }`}
-          title="API Key 설정"
-        >
-          {isKeyValid === true ? (
-            <Check className="w-5 h-5 text-white" />
-          ) : isKeyValid === false ? (
-            <AlertCircle className="w-5 h-5 text-white" />
-          ) : (
-            <Key className="w-5 h-5 text-white" />
-          )}
-          
-          {/* Tooltip */}
-          <span className="absolute right-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            {isKeyValid === true ? 'API Key 활성' : isKeyValid === false ? 'API Key 오류' : 'API Key 설정'}
-          </span>
-        </button>
-      </div>
     </div>
   );
 };

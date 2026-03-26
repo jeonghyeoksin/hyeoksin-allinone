@@ -54,6 +54,7 @@ export interface GeneratedContent {
   plan?: string; 
   prompt?: string; 
   loading: boolean;
+  progress?: number;
   error?: string;
   sources?: { title: string; url: string }[]; 
 }

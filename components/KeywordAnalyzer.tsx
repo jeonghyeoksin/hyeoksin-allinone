@@ -17,7 +17,11 @@ interface AnalysisResult {
   suggestedTitles: string[];
 }
 
-export const KeywordAnalyzer: React.FC = () => {
+interface KeywordAnalyzerProps {
+  setProgress: (progress: number) => void;
+}
+
+export const KeywordAnalyzer: React.FC<KeywordAnalyzerProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<KeywordAnalysisState>({ topic: '' });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -29,13 +33,17 @@ export const KeywordAnalyzer: React.FC = () => {
     setLoading(true);
     setError(null);
     setResult(null);
+    setProgress(10);
 
     try {
       const { data, usage: costUsage } = await generateKeywordAnalysis(inputs.topic);
+      setProgress(100);
       setResult(data);
       setUsage(costUsage);
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setError(e.message);
+      setProgress(0);
     } finally {
       setLoading(false);
     }

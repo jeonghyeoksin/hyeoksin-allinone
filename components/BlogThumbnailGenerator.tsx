@@ -3,7 +3,11 @@ import React, { useState, useRef } from 'react';
 import { ThumbnailState, GeneratedContent } from '../types';
 import { generateBlogThumbnail } from '../services/geminiService';
 
-export const BlogThumbnailGenerator: React.FC = () => {
+interface BlogThumbnailGeneratorProps {
+  setProgress: (progress: number) => void;
+}
+
+export const BlogThumbnailGenerator: React.FC<BlogThumbnailGeneratorProps> = ({ setProgress }) => {
   const [inputs, setInputs] = useState<ThumbnailState>({
     text: '',
     referenceImage: undefined
@@ -15,11 +19,15 @@ export const BlogThumbnailGenerator: React.FC = () => {
     if (!inputs.text) return;
     
     setResult({ loading: true, imageUrl: undefined });
+    setProgress(20);
     try {
       const imageUrl = await generateBlogThumbnail(inputs.text, inputs.referenceImage);
+      setProgress(100);
       setResult({ loading: false, imageUrl });
+      setTimeout(() => setProgress(0), 1000);
     } catch (e: any) {
       setResult({ loading: false, error: e.message });
+      setProgress(0);
     }
   };
 

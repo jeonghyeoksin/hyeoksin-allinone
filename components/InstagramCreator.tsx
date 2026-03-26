@@ -3,7 +3,7 @@ import React, { useState, useRef } from 'react';
 import { InstaState, GeneratedContent, CardNewsState } from '../types';
 import { generateInstagramContent, generateInstaCardNews } from '../services/geminiService';
 
-export const InstagramCreator: React.FC = () => {
+export const InstagramCreator: React.FC<{ setProgress: (p: number) => void }> = ({ setProgress }) => {
   const [pageCount, setPageCount] = useState<number>(1);
   
   // Single Post State
@@ -56,29 +56,38 @@ export const InstagramCreator: React.FC = () => {
         if (!singleInputs.concept) return;
         setResult({ loading: true, imageUrl: undefined, text: undefined });
         setStatusMessage("Gemini 3.0 Pro가 감성적인 피드를 생성 중입니다...");
+        setProgress(20);
 
         try {
             const { imageUrl, caption } = await generateInstagramContent(singleInputs.concept, singleInputs.mood, singleInputs.referenceImage);
+            setProgress(100);
             setResult({ loading: false, imageUrl, text: caption });
             setStatusMessage("");
+            setTimeout(() => setProgress(0), 1000);
         } catch (e: any) {
             setResult({ loading: false, error: e.message });
             setStatusMessage("");
+            setProgress(0);
         }
     } else {
         // Carousel Logic
         if (!carouselInputs.topic) return;
         setResult({ loading: true, imageUrl: undefined, text: undefined });
         setStatusMessage(`1단계: ${pageCount}컷 스토리보드 기획 중...`);
+        setProgress(20);
         
         try {
             setStatusMessage("2단계: Gemini 3.0 Pro가 표지 이미지를 렌더링 중입니다...");
+            setProgress(60);
             const { imageUrl, text } = await generateInstaCardNews(carouselInputs.topic, carouselInputs.style, pageCount);
+            setProgress(100);
             setResult({ loading: false, imageUrl, text });
             setStatusMessage("");
+            setTimeout(() => setProgress(0), 1000);
         } catch (e: any) {
             setResult({ loading: false, error: e.message });
             setStatusMessage("");
+            setProgress(0);
         }
     }
   };
@@ -316,7 +325,7 @@ export const InstagramCreator: React.FC = () => {
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                     </div>
-                    <div className="px-4 pb-10 text-sm h-[180px] overflow-y-auto custom-scrollbar">
+                    <div className="px-4 pb-10 text-sm h-[180px] overflow-y-auto custom-scrollbar no-copy">
                         <p className="font-bold mb-1 flex items-center gap-2">
                             <span className="w-4 h-4 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full ring-1 ring-white/20"></span>
                             MyBrand_Agent
@@ -345,15 +354,9 @@ export const InstagramCreator: React.FC = () => {
                             <span className="w-2 h-4 bg-pink-500 rounded"></span>
                             AI 최적화 캡션
                         </h3>
-                        <button 
-                            onClick={() => navigator.clipboard.writeText(result.text || '')} 
-                            className="text-[10px] uppercase font-bold bg-slate-800 hover:bg-pink-600 px-3 py-1.5 rounded-lg text-white transition-all shadow-lg"
-                        >
-                            Copy to Clipboard
-                        </button>
                     </div>
                     <textarea 
-                        className="w-full flex-1 bg-slate-800/40 border border-white/5 rounded-2xl p-5 text-slate-200 text-sm leading-relaxed focus:outline-none focus:ring-1 focus:ring-pink-500/30 resize-none custom-scrollbar" 
+                        className="w-full flex-1 bg-slate-800/40 border border-white/5 rounded-2xl p-5 text-slate-200 text-sm leading-relaxed focus:outline-none focus:ring-1 focus:ring-pink-500/30 resize-none custom-scrollbar no-copy" 
                         value={result.text} 
                         onChange={(e) => setResult({...result, text: e.target.value})}
                     />
@@ -383,15 +386,9 @@ export const InstagramCreator: React.FC = () => {
              <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-xl h-[600px] overflow-hidden flex flex-col">
                  <div className="flex justify-between items-center mb-2">
                      <h3 className="text-md font-semibold text-white">카드뉴스 기획안 ({pageCount}장)</h3>
-                     <button 
-                         onClick={() => navigator.clipboard.writeText(result.text || '')}
-                         className="text-xs bg-slate-700 px-3 py-1 rounded text-white hover:bg-slate-600 transition-colors"
-                     >
-                         기획안 복사
-                     </button>
                  </div>
                  <div 
-                    className="bg-slate-800/50 p-4 rounded-lg flex-1 overflow-y-auto custom-scrollbar text-sm text-slate-300" 
+                    className="bg-slate-800/50 p-4 rounded-lg flex-1 overflow-y-auto custom-scrollbar text-sm text-slate-300 no-copy" 
                     dangerouslySetInnerHTML={{ __html: result.text }} 
                  />
              </div>
