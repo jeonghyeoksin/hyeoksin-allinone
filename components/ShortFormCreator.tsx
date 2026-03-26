@@ -244,7 +244,7 @@ export const ShortFormCreator: React.FC<ShortFormCreatorProps> = ({ setProgress 
 
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
-           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col">
+           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">
              
              {/* Header */}
              <div className="flex justify-between items-center mb-6">
@@ -269,7 +269,7 @@ export const ShortFormCreator: React.FC<ShortFormCreatorProps> = ({ setProgress 
              <div className="flex flex-col lg:flex-row gap-6 h-full">
                  {/* Left: Script/Plan */}
                  {result.text && (
-                    <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/50 p-4 rounded-xl max-h-[600px]">
+                    <div className="flex-1 bg-slate-800/50 p-4 rounded-xl">
                         <div dangerouslySetInnerHTML={{ __html: result.text }} />
                         {veoPrompt && (
                              <div className="mt-4 p-3 bg-black/30 rounded border border-white/5 text-xs font-mono text-slate-400">

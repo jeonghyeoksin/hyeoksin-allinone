@@ -206,7 +206,7 @@ export const DetailPageCreator: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Input Form */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full overflow-y-auto custom-scrollbar">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-teal-500 rounded mr-2"></span>
               상세페이지 제작 설정
@@ -347,7 +347,7 @@ export const DetailPageCreator: React.FC = () => {
         </div>
 
         {/* Right Column: Output Tabs */}
-        <div className="lg:col-span-2 flex flex-col h-full min-h-[600px] animate-fade-in">
+        <div className="lg:col-span-2 flex flex-col h-full animate-fade-in">
             {/* Tabs */}
             <div className="flex border-b border-white/5 mb-6 overflow-x-auto no-scrollbar">
                 {[
@@ -371,7 +371,7 @@ export const DetailPageCreator: React.FC = () => {
                 
                 {/* PLAN TAB - Editable Version */}
                 {activeTab === 'PLAN' && (
-                    <div className="h-full overflow-y-auto custom-scrollbar space-y-6 pr-2">
+                    <div className="h-full space-y-6 pr-2">
                         {segments.length === 0 ? (
                             <div className="flex-1 flex flex-col items-center justify-center text-slate-600 py-20">
                                 <svg className="w-20 h-20 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -457,7 +457,7 @@ export const DetailPageCreator: React.FC = () => {
                             </button>
                         </div>
                         
-                        <div className="flex-1 overflow-y-auto custom-scrollbar grid grid-cols-1 md:grid-cols-2 gap-8 pb-4 pr-2">
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 pb-4 pr-2">
                             {segments.length === 0 ? (
                                 <div className="col-span-full flex flex-col items-center justify-center text-slate-600 py-20">
                                     <p>먼저 기획안을 생성하고 내용을 확인해주세요.</p>

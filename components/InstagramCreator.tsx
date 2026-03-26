@@ -325,7 +325,7 @@ export const InstagramCreator: React.FC<{ setProgress: (p: number) => void }> = 
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                     </div>
-                    <div className="px-4 pb-10 text-sm h-[180px] overflow-y-auto custom-scrollbar no-copy">
+                    <div className="px-4 pb-10 text-sm no-copy">
                         <p className="font-bold mb-1 flex items-center gap-2">
                             <span className="w-4 h-4 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full ring-1 ring-white/20"></span>
                             MyBrand_Agent
@@ -356,7 +356,7 @@ export const InstagramCreator: React.FC<{ setProgress: (p: number) => void }> = 
                         </h3>
                     </div>
                     <textarea 
-                        className="w-full flex-1 bg-slate-800/40 border border-white/5 rounded-2xl p-5 text-slate-200 text-sm leading-relaxed focus:outline-none focus:ring-1 focus:ring-pink-500/30 resize-none custom-scrollbar no-copy" 
+                        className="w-full min-h-[300px] bg-slate-800/40 border border-white/5 rounded-2xl p-5 text-slate-200 text-sm leading-relaxed focus:outline-none focus:ring-1 focus:ring-pink-500/30 resize-none no-copy" 
                         value={result.text} 
                         onChange={(e) => setResult({...result, text: e.target.value})}
                     />
@@ -383,19 +383,19 @@ export const InstagramCreator: React.FC<{ setProgress: (p: number) => void }> = 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
              {/* Carousel Plan Output */}
              {result.text && (
-             <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-xl h-[600px] overflow-hidden flex flex-col">
+             <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-4 rounded-2xl shadow-xl flex flex-col">
                  <div className="flex justify-between items-center mb-2">
                      <h3 className="text-md font-semibold text-white">카드뉴스 기획안 ({pageCount}장)</h3>
                  </div>
                  <div 
-                    className="bg-slate-800/50 p-4 rounded-lg flex-1 overflow-y-auto custom-scrollbar text-sm text-slate-300 no-copy" 
+                    className="bg-slate-800/50 p-4 rounded-lg flex-1 text-sm text-slate-300 no-copy" 
                     dangerouslySetInnerHTML={{ __html: result.text }} 
                  />
              </div>
            )}
 
            {/* Single Cover Image */}
-           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl min-h-[600px] flex flex-col items-center justify-center">
+           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl flex flex-col items-center justify-center">
              <div className="flex justify-between items-center w-full mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center">
                     <span className="w-2 h-6 bg-orange-500 rounded mr-2"></span>
@@ -410,7 +410,7 @@ export const InstagramCreator: React.FC<{ setProgress: (p: number) => void }> = 
              )}
 
              {!result.imageUrl && !result.loading && !result.error && (
-                <div className="flex flex-col items-center justify-center h-96 text-slate-500 opacity-60">
+                <div className="flex flex-col items-center justify-center py-20 text-slate-500 opacity-60">
                     <svg className="w-20 h-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     <p>주제를 입력하면 기획안과 표지 이미지가 생성됩니다.</p>
                 </div>

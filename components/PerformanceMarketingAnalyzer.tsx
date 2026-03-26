@@ -262,7 +262,7 @@ export const PerformanceMarketingAnalyzer: React.FC = () => {
       </div>
 
       {/* Output Section */}
-      <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col">
+      <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">
          {/* Header */}
          <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold text-white">
@@ -293,7 +293,7 @@ export const PerformanceMarketingAnalyzer: React.FC = () => {
          )}
          
          {result.text && (
-            <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/30 p-6 rounded-xl border border-white/5">
+            <div className="flex-1 bg-slate-800/30 p-6 rounded-xl border border-white/5">
                 <div 
                     className="prose prose-invert prose-red max-w-none"
                     dangerouslySetInnerHTML={{ __html: result.text }} 

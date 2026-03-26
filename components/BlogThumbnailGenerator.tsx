@@ -137,7 +137,7 @@ export const BlogThumbnailGenerator: React.FC<BlogThumbnailGeneratorProps> = ({ 
 
         {/* Output Section */}
         <div className="flex flex-col gap-6">
-            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl flex-1 flex flex-col items-center justify-center min-h-[400px]">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl flex-1 flex flex-col items-center justify-center">
                 {result.loading && (
                     <div className="text-center">
                         <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>

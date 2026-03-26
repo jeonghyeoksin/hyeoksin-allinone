@@ -97,7 +97,7 @@ export const YouTubePlanner: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Input Section */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full overflow-y-auto custom-scrollbar">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-red-600 rounded mr-2"></span>
               유튜브 기획 설정
@@ -259,7 +259,7 @@ export const YouTubePlanner: React.FC = () => {
 
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
-           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col relative">
+           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative">
              
              {/* Header */}
              <div className="flex justify-between items-center mb-6">
@@ -293,7 +293,7 @@ export const YouTubePlanner: React.FC = () => {
              
              {/* Report Content */}
              {result.text && (
-                <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-900/30 p-2 rounded-xl">
+                <div className="flex-1 bg-slate-900/30 p-2 rounded-xl">
                     <div 
                         className="prose prose-invert max-w-none text-sm leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: result.text }} 

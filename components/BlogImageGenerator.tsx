@@ -74,7 +74,7 @@ export const BlogImageGenerator: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 min-h-[400px] bg-black/40 border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden relative group">
+      <div className="flex-1 bg-black/40 border border-white/5 rounded-2xl flex items-center justify-center overflow-hidden relative group">
         {result.loading && (
            <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/80 z-20">
              <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -98,7 +98,7 @@ export const BlogImageGenerator: React.FC = () => {
 
         {result.imageUrl && (
           <div className="relative w-full h-full flex items-center justify-center">
-             <img src={result.imageUrl} alt="Generated Blog Thumbnail" className="max-w-full max-h-[600px] object-contain shadow-2xl" />
+             <img src={result.imageUrl} alt="Generated Blog Thumbnail" className="max-w-full object-contain shadow-2xl" />
              <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                 <a 
                   href={result.imageUrl} 

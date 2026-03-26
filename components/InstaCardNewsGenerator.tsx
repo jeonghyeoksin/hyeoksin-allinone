@@ -235,7 +235,7 @@ export const InstaCardNewsGenerator: React.FC<InstaCardNewsGeneratorProps> = ({ 
 
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
-           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl min-h-[600px] flex flex-col">
+           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl flex flex-col">
              <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                     <span className="w-2 h-6 bg-orange-500 rounded"></span>
@@ -262,7 +262,7 @@ export const InstaCardNewsGenerator: React.FC<InstaCardNewsGeneratorProps> = ({ 
              )}
              
              {/* Slide Grid */}
-             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto custom-scrollbar pr-2 pb-4 mb-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pr-2 pb-4 mb-6">
                  {slides.map((slide) => (
                      <div key={slide.slideNumber} className="bg-slate-800/40 rounded-xl overflow-hidden border border-white/5 shadow-lg group hover:border-pink-500/30 transition-all">
                          {/* Image Area */}
@@ -315,7 +315,7 @@ export const InstaCardNewsGenerator: React.FC<InstaCardNewsGeneratorProps> = ({ 
                              캡션 복사
                          </button>
                      </div>
-                     <div className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap max-h-40 overflow-y-auto custom-scrollbar p-2 bg-slate-900/30 rounded-lg border border-white/5">
+                     <div className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap p-2 bg-slate-900/30 rounded-lg border border-white/5">
                          {caption}
                      </div>
                  </div>

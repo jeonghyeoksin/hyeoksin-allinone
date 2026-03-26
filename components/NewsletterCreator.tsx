@@ -183,7 +183,7 @@ export const NewsletterCreator: React.FC<NewsletterCreatorProps> = ({ setProgres
 
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
-           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col relative">
+           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative">
              
              {/* Header */}
              <div className="flex justify-between items-center mb-6">

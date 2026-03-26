@@ -164,7 +164,7 @@ export const ProfessionalBlogWriter: React.FC<{ setProgress: (p: number) => void
 
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
-           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col">
+           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">
              
              {/* Header */}
              <div className="flex justify-between items-center mb-6">
@@ -187,7 +187,7 @@ export const ProfessionalBlogWriter: React.FC<{ setProgress: (p: number) => void
              )}
              
              {result.text && (
-                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 mb-6 no-copy">
+                <div className="mb-6 no-copy">
                     <div className="bg-white text-slate-900 p-8 rounded-xl leading-relaxed shadow-inner">
                         <div dangerouslySetInnerHTML={{ __html: result.text }} />
                     </div>

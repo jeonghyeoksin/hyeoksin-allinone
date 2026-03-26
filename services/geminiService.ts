@@ -35,7 +35,7 @@ export const validateApiKey = async (key: string): Promise<boolean> => {
 
 const TEXT_MODEL = 'gemini-3-flash-preview';
 const PRO_TEXT_MODEL = 'gemini-3-pro-preview';
-const IMAGE_MODEL = 'gemini-2.5-flash-image';
+const IMAGE_MODEL = 'gemini-3-pro-image-preview';
 const PRO_IMAGE_MODEL = 'gemini-3-pro-image-preview';
 const VEO_MODEL = 'veo-3.1-fast-generate-preview';
 const AUDIO_MODEL = 'gemini-2.5-flash-preview-tts';
@@ -127,8 +127,8 @@ export const generateCarouselImage = async (slide: CarouselSlide, style: string)
     const model = isCover ? PRO_IMAGE_MODEL : IMAGE_MODEL; 
     
     let imagePrompt = `Instagram Image. ${slide.visualPrompt}. Style: ${style}. Aspect Ratio 4:5.`;
-    if (isCover && slide.imageText) {
-        imagePrompt += ` Render Text: "${slide.imageText}" in Korean. Bold, high contrast typography.`;
+    if (slide.imageText) {
+        imagePrompt += ` IMPORTANT: Render the following Korean text clearly and accurately: "${slide.imageText}". Use bold, high-contrast typography. Ensure no characters are broken or corrupted. The text must be in Korean (Hangul).`;
     }
 
     try {
@@ -184,11 +184,11 @@ export const generateBlogPost = async (topic: string, keyword: string, target: s
 
 export const generateBlogImagesBatch = async (topic: string, keyword: string, tone?: string) => {
     // Generating 1 representative image for demonstration as batch generation of different images needs multiple calls or complex prompting
-    const prompt = `Blog post illustration. Topic: ${topic}, Keyword: ${keyword}, Tone: ${tone || 'Friendly'}. High quality, 16:9.`;
+    const prompt = `Blog post illustration. Topic: ${topic}, Keyword: ${keyword}, Tone: ${tone || 'Friendly'}. High quality, 16:9. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`;
     const res = await getAI().models.generateContent({ 
         model: IMAGE_MODEL, 
         contents: prompt,
-        config: { imageConfig: { aspectRatio: "16:9" } }
+        config: { imageConfig: { aspectRatio: "16:9", imageSize: "1K" } }
     });
     const url = extractBase64Image(res);
     // Returning array to simulate batch
@@ -197,9 +197,10 @@ export const generateBlogImagesBatch = async (topic: string, keyword: string, to
 
 // 3. Blog Image Generator
 export const generateBlogImage = async (prompt: string, style: string) => {
+    const fullPrompt = `${prompt}. Style: ${style}. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`;
     const res = await getAI().models.generateContent({
         model: PRO_IMAGE_MODEL,
-        contents: `${prompt}. Style: ${style}`,
+        contents: fullPrompt,
         config: { imageConfig: { aspectRatio: "16:9", imageSize: "1K" } }
     });
     return extractBase64Image(res);
@@ -210,11 +211,11 @@ export const generateInstagramContent = async (concept: string, mood: string, re
     const parts: Part[] = [{ text: `Create an Instagram post caption in Korean. Concept: ${concept}, Mood: ${mood}. Include hashtags.` }];
     if (refImg) { const p = imageToPart(refImg); if(p) parts.push(p); }
     
-    const textRes = await getAI().models.generateContent({ model: TEXT_MODEL, contents: { parts } });
+    const textRes = await getAI().models.generateContent({ model: PRO_TEXT_MODEL, contents: { parts } });
     
     const imgRes = await getAI().models.generateContent({
         model: PRO_IMAGE_MODEL,
-        contents: `Instagram photo. Concept: ${concept}, Mood: ${mood}. High quality, 4:5 ratio.`,
+        contents: `Instagram photo. Concept: ${concept}, Mood: ${mood}. High quality, 4:5 ratio. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`,
         config: { imageConfig: { aspectRatio: "4:5", imageSize: "1K" } }
     });
 
@@ -237,7 +238,7 @@ export const generateHospitalBlogPost = async (name: string, subject: string, ke
 };
 
 export const generateHospitalImagesBatch = async (name: string, subject: string, keywords: string, refDoc?: string) => {
-    const prompt = `Professional hospital image. Subject: ${subject}, Atmosphere: Trustworthy. 16:9.`;
+    const prompt = `Professional hospital image. Subject: ${subject}, Atmosphere: Trustworthy. 16:9. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`;
     const parts: Part[] = [{ text: prompt }];
     if (refDoc) { const p = imageToPart(refDoc); if(p) parts.push(p); }
 
@@ -262,7 +263,7 @@ export const generateAcademyBlogPost = async (name: string, subject: string, key
 };
 
 export const generateAcademyImagesBatch = async (name: string, subject: string, keywords: string, refTeacher?: string) => {
-    const prompt = `Education academy image. Subject: ${subject}. Professional and encouraging. 16:9.`;
+    const prompt = `Education academy image. Subject: ${subject}. Professional and encouraging. 16:9. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`;
     const parts: Part[] = [{ text: prompt }];
     if (refTeacher) { const p = imageToPart(refTeacher); if(p) parts.push(p); }
 
@@ -279,7 +280,7 @@ export const generateAcademyImagesBatch = async (name: string, subject: string, 
 export const generateStorytellingImages = async (content: string) => {
     // Generate 4 distinct prompts first
     const promptRes = await getAI().models.generateContent({
-        model: TEXT_MODEL,
+        model: PRO_TEXT_MODEL,
         contents: `Analyze this text: "${content.slice(0, 500)}...". Create 4 visual prompts for a 4-cut story (Hook, Concept, Solution, CTA). Return JSON: ["prompt1", "prompt2", "prompt3", "prompt4"].`,
         config: { responseMimeType: "application/json" }
     });
@@ -290,9 +291,9 @@ export const generateStorytellingImages = async (content: string) => {
     // Generate 1st image as representative (Sequential generation is slow, just doing one for demo or loop if needed)
     // For this example, we generate 1 image based on the first prompt to save time/quota in this specific function structure
     const imgRes = await getAI().models.generateContent({
-        model: IMAGE_MODEL,
-        contents: prompts[0] || content,
-        config: { imageConfig: { aspectRatio: "16:9" } }
+        model: PRO_IMAGE_MODEL,
+        contents: `${prompts[0] || content}. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`,
+        config: { imageConfig: { aspectRatio: "16:9", imageSize: "1K" } }
     });
     
     const url = extractBase64Image(imgRes);
@@ -301,7 +302,7 @@ export const generateStorytellingImages = async (content: string) => {
 
 // 8. Blog Thumbnail
 export const generateBlogThumbnail = async (text: string, refImg?: string) => {
-    const prompt = `Blog thumbnail with text: "${text}". High quality, 1:1 square.`;
+    const prompt = `Blog thumbnail. High quality, 1:1 square. IMPORTANT: Render the following Korean text clearly and accurately in the center: "${text}". Use professional typography. Ensure no characters are broken or corrupted. The text must be in Korean (Hangul).`;
     const parts: Part[] = [{ text: prompt }];
     if (refImg) { const p = imageToPart(refImg); if(p) parts.push(p); }
 
@@ -440,7 +441,7 @@ export const generateNewsletter = async (topic: string) => {
 export const generateNewsletterImage = async (topic: string) => {
     const res = await getAI().models.generateContent({
         model: PRO_IMAGE_MODEL,
-        contents: `Newsletter thumbnail for ${topic}. High quality, 16:9.`,
+        contents: `Newsletter thumbnail for ${topic}. High quality, 16:9. IMPORTANT: If any text appears in the image, it must be rendered clearly and accurately in Korean (Hangul). Use bold, high-contrast typography. Ensure no characters are broken or corrupted.`,
         config: { imageConfig: { aspectRatio: "16:9", imageSize: "1K" } }
     });
     return { imageUrl: extractBase64Image(res), usage: getUsage(res) };
@@ -483,7 +484,7 @@ export const suggestFeatures = async (name: string, category: string) => {
 };
 
 export const generateSectionImage = async (segment: DetailImageSegment, refImg?: string) => {
-    const parts: Part[] = [{ text: `Product image. ${segment.visualPrompt}. Text to render: "${segment.keyMessage}".` }];
+    const parts: Part[] = [{ text: `Product image. ${segment.visualPrompt}. IMPORTANT: Render the following Korean text clearly and accurately: "${segment.keyMessage}". Ensure no characters are broken or corrupted. The text must be in Korean (Hangul).` }];
     if (refImg) { const p = imageToPart(refImg); if(p) parts.push(p); }
 
     const res = await getAI().models.generateContent({
@@ -495,7 +496,7 @@ export const generateSectionImage = async (segment: DetailImageSegment, refImg?:
 };
 
 export const generateThumbnail = async (info: ProductInfo, options: ThumbnailOptions, text: string) => {
-    const prompt = `Product thumbnail. Name: ${info.name}. Style: ${options.style}. Include Model: ${options.includeModel}. Text: "${text}". 1:1.`;
+    const prompt = `Product thumbnail. Name: ${info.name}. Style: ${options.style}. Include Model: ${options.includeModel}. IMPORTANT: Render the following Korean text clearly and accurately: "${text}". Ensure no characters are broken or corrupted. The text must be in Korean (Hangul). 1:1.`;
     const parts: Part[] = [{ text: prompt }];
     if (info.referenceImage) { const p = imageToPart(info.referenceImage); if(p) parts.push(p); }
 
@@ -566,7 +567,7 @@ export const generateDetailResearch = async (topic: string, category: string, fi
 
 export const generateCarouselSummary = async (content: string, count: number) => {
     const res = await getAI().models.generateContent({
-        model: TEXT_MODEL,
+        model: PRO_TEXT_MODEL,
         contents: `Summarize this content into ${count} Instagram carousel slides. HTML format.`
     });
     return { text: res.text, usage: getUsage(res) };

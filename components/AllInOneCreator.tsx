@@ -101,7 +101,7 @@ export const AllInOneCreator: React.FC<{ setProgress: (p: number) => void }> = (
         </div>
       </div>
 
-      <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden min-h-[600px] flex flex-col">
+      <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-2xl shadow-xl overflow-hidden flex flex-col">
           <div className="flex border-b border-white/10">
               <button onClick={() => setActiveTab('BLOG')} className={`flex-1 py-4 font-bold text-sm ${activeTab === 'BLOG' ? 'text-blue-400 border-b-2 border-blue-400' : 'text-slate-500'}`}>
                   블로그 (SEO + 이미지)
@@ -111,7 +111,7 @@ export const AllInOneCreator: React.FC<{ setProgress: (p: number) => void }> = (
               </button>
           </div>
 
-          <div className="p-6 flex-1 overflow-y-auto custom-scrollbar">
+          <div className="p-6 flex-1">
               {activeTab === 'BLOG' && (
                   blogResult.text ? (
                     <div className="prose prose-invert max-w-none no-copy">

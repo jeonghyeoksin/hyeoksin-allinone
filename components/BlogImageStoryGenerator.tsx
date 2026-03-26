@@ -105,7 +105,7 @@ export const BlogImageStoryGenerator: React.FC<BlogImageStoryGeneratorProps> = (
 
         {/* Output Section */}
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl min-h-[500px]">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
              <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center">
                     <span className="w-2 h-6 bg-pink-500 rounded mr-2"></span>
@@ -129,7 +129,7 @@ export const BlogImageStoryGenerator: React.FC<BlogImageStoryGeneratorProps> = (
              )}
 
              {!result.images && !result.loading && !result.error && (
-                <div className="flex flex-col items-center justify-center h-96 text-slate-500 opacity-60">
+                <div className="flex flex-col items-center justify-center py-20 text-slate-500 opacity-60">
                     <svg className="w-20 h-20 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                     <p>내용을 입력하면 4단계(Hook-Concept-Solution-CTA) 이미지가 생성됩니다.</p>
                 </div>

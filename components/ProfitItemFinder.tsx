@@ -82,7 +82,7 @@ export const ProfitItemFinder: React.FC<{ setProgress: (p: number) => void }> = 
 
       {/* Output Section */}
       {(result.text || result.error) && (
-        <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[500px] flex flex-col relative animate-fade-in">
+        <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative animate-fade-in">
             
             <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">

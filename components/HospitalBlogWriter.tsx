@@ -385,7 +385,7 @@ export const HospitalBlogWriter: React.FC<{ setProgress: (p: number) => void }> 
         <div className="md:col-span-2 space-y-6">
           
           {/* Text Result */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[400px] max-h-[600px] flex flex-col">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">블로그 원고 (의료법 준수)</h3>
             </div>
@@ -406,7 +406,7 @@ export const HospitalBlogWriter: React.FC<{ setProgress: (p: number) => void }> 
             )}
 
             {result.text && (
-              <div className="prose prose-invert prose-lg max-w-none overflow-y-auto custom-scrollbar flex-1 pr-2 no-copy">
+              <div className="prose prose-invert prose-lg max-w-none pr-2 no-copy">
                 <div className="whitespace-pre-wrap leading-relaxed">
                   {result.text}
                 </div>

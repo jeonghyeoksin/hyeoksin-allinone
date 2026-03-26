@@ -111,7 +111,7 @@ export const CarouselSummary: React.FC = () => {
 
         {/* Output Section */}
         <div className="lg:col-span-2 space-y-6">
-            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col relative animate-fade-in">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative animate-fade-in">
                 
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -143,7 +143,7 @@ export const CarouselSummary: React.FC = () => {
                 )}
                 
                 {result.text && (
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
+                    <div className="flex-1 p-2">
                         <div dangerouslySetInnerHTML={{ __html: result.text }} />
                     </div>
                 )}

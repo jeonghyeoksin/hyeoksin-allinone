@@ -257,14 +257,14 @@ export const BlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ set
         <div className="md:col-span-2 space-y-6">
           
           {/* Text Result */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[400px] max-h-[700px] flex flex-col relative">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">블로그 원고</h3>
             </div>
 
             {/* Content Display */}
             {result.text ? (
-              <div className="prose prose-invert prose-lg max-w-none overflow-y-auto custom-scrollbar flex-1 pr-2 no-copy">
+              <div className="prose prose-invert prose-lg max-w-none pr-2 no-copy">
                 <div className="whitespace-pre-wrap leading-relaxed text-slate-200" dangerouslySetInnerHTML={{ __html: result.text }} />
               </div>
             ) : (

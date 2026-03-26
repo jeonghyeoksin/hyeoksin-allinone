@@ -415,7 +415,7 @@ export const AcademyBlogWriter: React.FC<AcademyBlogWriterProps> = ({ setProgres
         <div className="md:col-span-2 space-y-6">
           
           {/* Text Result */}
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[400px] max-h-[600px] flex flex-col">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-semibold text-white">블로그 원고 (SEO 최적화 + 서식 적용)</h3>
             </div>
@@ -436,7 +436,7 @@ export const AcademyBlogWriter: React.FC<AcademyBlogWriterProps> = ({ setProgres
             )}
 
             {result.text && (
-              <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 bg-white rounded-lg text-slate-900 p-6 no-copy">
+              <div className="pr-2 bg-white rounded-lg text-slate-900 p-6 no-copy">
                  {/* Render HTML content safely */}
                  <div 
                     className="blog-content-preview"

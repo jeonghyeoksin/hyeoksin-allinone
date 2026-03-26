@@ -239,7 +239,7 @@ export const DetailResearch: React.FC<{ setProgress: (p: number) => void }> = ({
       {/* Output Section */}
       {(result.text || result.sources || result.error) && (
         <div className="space-y-6 animate-fade-in">
-            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl min-h-[600px] flex flex-col relative">
+            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative">
                 
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-lg font-semibold text-white flex items-center gap-2">
@@ -257,7 +257,7 @@ export const DetailResearch: React.FC<{ setProgress: (p: number) => void }> = ({
                 <div className="flex-1 flex flex-col lg:flex-row gap-8 overflow-hidden">
                     {/* Main Content */}
                     {result.text && (
-                        <div className="flex-1 overflow-y-auto custom-scrollbar bg-slate-800/30 p-6 rounded-xl border border-white/5 no-copy">
+                        <div className="flex-1 bg-slate-800/30 p-6 rounded-xl border border-white/5 no-copy">
                             <div className="prose prose-invert prose-indigo max-w-none leading-relaxed">
                                 <div 
                                     className="whitespace-pre-wrap font-sans text-slate-200"
@@ -269,7 +269,7 @@ export const DetailResearch: React.FC<{ setProgress: (p: number) => void }> = ({
 
                     {/* Sources Sidebar */}
                     {result.sources && result.sources.length > 0 && (
-                        <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4 overflow-y-auto custom-scrollbar bg-slate-950/30 p-4 rounded-xl border border-white/5">
+                        <div className="w-full lg:w-72 shrink-0 flex flex-col gap-4 bg-slate-950/30 p-4 rounded-xl border border-white/5">
                             <h4 className="text-xs font-bold text-indigo-400 uppercase tracking-widest flex items-center gap-2">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
                                 참고 문헌 / 출처
@@ -357,7 +357,7 @@ export const DetailResearch: React.FC<{ setProgress: (p: number) => void }> = ({
 
                     {carouselResult.text && (
                         <div className="relative">
-                            <div className="overflow-y-auto custom-scrollbar p-2 no-copy">
+                            <div className="p-2 no-copy">
                                 <div dangerouslySetInnerHTML={{ __html: carouselResult.text }} />
                             </div>
                         </div>
