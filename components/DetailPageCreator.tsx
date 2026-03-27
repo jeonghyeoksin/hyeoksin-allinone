@@ -203,10 +203,10 @@ export const DetailPageCreator: React.FC = () => {
           </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Input Form */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-teal-500 rounded mr-2"></span>
               상세페이지 제작 설정
@@ -347,7 +347,7 @@ export const DetailPageCreator: React.FC = () => {
         </div>
 
         {/* Right Column: Output Tabs */}
-        <div className="lg:col-span-2 flex flex-col h-full animate-fade-in">
+        <div className="lg:col-span-1 flex flex-col animate-fade-in">
             {/* Tabs */}
             <div className="flex border-b border-white/5 mb-6 overflow-x-auto no-scrollbar">
                 {[

@@ -128,10 +128,10 @@ export const NewsletterCreator: React.FC<NewsletterCreatorProps> = ({ setProgres
           </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-lime-500 rounded mr-2"></span>
               뉴스레터 제작 설정
@@ -182,7 +182,7 @@ export const NewsletterCreator: React.FC<NewsletterCreatorProps> = ({ setProgres
         </div>
 
         {/* Output Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-1 space-y-6">
            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative">
              
              {/* Header */}

@@ -71,10 +71,10 @@ export const ProfessionalBlogWriter: React.FC<{ setProgress: (p: number) => void
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full overflow-y-auto">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-indigo-500 rounded mr-2"></span>
               전문직 블로그 인터뷰
@@ -163,7 +163,7 @@ export const ProfessionalBlogWriter: React.FC<{ setProgress: (p: number) => void
         </div>
 
         {/* Output Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-1 space-y-6">
            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">
              
              {/* Header */}

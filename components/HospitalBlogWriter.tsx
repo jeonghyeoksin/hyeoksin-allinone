@@ -145,10 +145,10 @@ export const HospitalBlogWriter: React.FC<{ setProgress: (p: number) => void }> 
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="md:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full overflow-y-auto">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
               <span className="w-2 h-6 bg-green-500 rounded mr-2"></span>
               병원 마케팅 설정
@@ -382,7 +382,7 @@ export const HospitalBlogWriter: React.FC<{ setProgress: (p: number) => void }> 
         </div>
 
         {/* Output Section */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-1 space-y-6">
           
           {/* Text Result */}
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col">

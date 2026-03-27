@@ -33,7 +33,7 @@ export const validateApiKey = async (key: string): Promise<boolean> => {
     }
 };
 
-const TEXT_MODEL = 'gemini-3-flash-preview';
+const TEXT_MODEL = 'gemini-3-pro-preview';
 const PRO_TEXT_MODEL = 'gemini-3-pro-preview';
 const IMAGE_MODEL = 'gemini-3-pro-image-preview';
 const PRO_IMAGE_MODEL = 'gemini-3-pro-image-preview';

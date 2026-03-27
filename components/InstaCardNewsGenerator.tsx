@@ -147,10 +147,10 @@ export const InstaCardNewsGenerator: React.FC<InstaCardNewsGeneratorProps> = ({ 
           </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-pink-500 rounded mr-2"></span>
               인스타 캐러셀 (Deep Research)
@@ -234,7 +234,7 @@ export const InstaCardNewsGenerator: React.FC<InstaCardNewsGeneratorProps> = ({ 
         </div>
 
         {/* Output Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-1 space-y-6">
            <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl flex flex-col">
              <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">

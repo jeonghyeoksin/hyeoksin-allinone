@@ -41,10 +41,10 @@ export const CarouselSummary: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="lg:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-xl font-bold text-white mb-6 flex items-center">
               <span className="w-2 h-6 bg-pink-500 rounded mr-3"></span>
               캐러셀용 컨텐츠 요약
@@ -110,7 +110,7 @@ export const CarouselSummary: React.FC = () => {
         </div>
 
         {/* Output Section */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-1 space-y-6">
             <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative animate-fade-in">
                 
                 <div className="flex justify-between items-center mb-6">

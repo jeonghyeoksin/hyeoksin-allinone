@@ -68,7 +68,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title, subtitle, onBac
       </header>
       
       <main className="flex-1 overflow-y-auto p-8 relative z-10 scroll-smooth custom-scrollbar">
-        <div className="max-w-6xl mx-auto pb-20">
+        <div className="max-w-7xl mx-auto pb-20">
           {children}
         </div>
       </main>

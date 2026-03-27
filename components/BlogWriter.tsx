@@ -117,10 +117,10 @@ export const BlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ set
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Input Section */}
         <div className="md:col-span-1 space-y-4">
-          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl h-full overflow-y-auto custom-scrollbar">
+          <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-6 rounded-2xl shadow-xl">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
               <span className="w-2 h-6 bg-blue-500 rounded mr-2"></span>
               블로그 올인원 설정
@@ -254,7 +254,7 @@ export const BlogWriter: React.FC<{ setProgress: (p: number) => void }> = ({ set
         </div>
 
         {/* Output Section */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="md:col-span-1 space-y-6">
           
           {/* Text Result */}
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 p-8 rounded-2xl shadow-xl flex flex-col relative">
